@@ -1,3 +1,26 @@
+##------Names-------------------------------------------------------------------
+## Jialong He (s2281875)
+## Linshen Shu (s2317223)
+## Heyu Nie (s2404675)
+
+##-------Address of github repo-------------------------------------------------
+# https://github.com/Yancy0517/practical-2.git
+
+##--------Team member contribution----------------------------------------------
+## Linshen was responsible for first 2 parts(35%); 
+## Jialong for part 3 to part 5(35%)
+## Heyu for last parts and debugging and overall comments(30%)
+
+##--------- Outline of project--------------------------------------------------
+
+## We use 3 strategies to judge the probability of a single prisoner and all 2n prisoners
+## finding theirs own number. The method is that all prisoners (prisoners numbered 1 to 2n) 
+## draw cards with their numbers on them (there are 2n cards with numbers from 1 
+## to 2n on them, which are then placed in 2n boxes), but each prisoner draws at 
+## most n times of these cards.
+
+## We go through the code to estimate the probability distribution and find 
+#  surprising results.
 
 find_one <- function(card, n, k, strategy){
   # This function is a function created to simplify the following Pone and Pall 
@@ -133,3 +156,33 @@ x <- 1:100
 # probability, then generate a plot.
 plot(x, y, xlab = "Length of loop", ylab = "Probabilities", pch = 20,
      main = "Probabilities of the length of each loop")
+
+P_success <- function(n, nreps){
+  # This function is almost identical to dloop, except that it adds an if statement 
+  # to dloop, so that it only calculates the probability of a loop length no longer 
+  # than n in nreps simulations.
+  prob_matrix <- matrix(0, nrow = nreps, ncol = 2*n) 
+  b <- 0 
+  for (i in 1:nreps) {
+    ncard <- sample(1:(2*n), 2*n) 
+    for (j in 1:(2*n)) {
+      box <- j
+      depth <- 1
+      while (depth <= 2*n) {
+        if(ncard[box] == j){
+          prob_matrix[i, depth] = 1
+          break
+        }else{
+          box = ncard[box]
+          depth = depth + 1
+        }
+      }
+    }
+    if(sum(prob_matrix[i, (n+1):(2*n)]) == 0){ 
+      b <- b + 1
+    }
+  }
+  return(b/nreps)
+}
+P_success(50, 10000)
+
